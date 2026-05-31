@@ -1,34 +1,40 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import crypto from "crypto";
 
-function createToken() {
+const redis = Redis.fromEnv();
 
+function generateToken() {
   return crypto
     .randomBytes(8)
     .toString("hex")
     .toUpperCase();
 }
 
-export default async function handler(
-  req,
-  res
-){
+export default async function handler(req, res) {
 
-  if(req.method !== "POST"){
-    return res.status(405).end();
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
   }
 
   const { username } = req.body;
 
-  if(!username){
+  if (!username) {
     return res.status(400).json({
-      error:"Username required"
+      error: "Username kosong"
     });
   }
 
-  const token = createToken();
+  let token = generateToken();
 
-  await kv.set(
+  while (
+    await redis.get(`token:${token}`)
+  ) {
+    token = generateToken();
+  }
+
+  await redis.set(
     `token:${token}`,
     {
       username,
@@ -36,12 +42,8 @@ export default async function handler(
     }
   );
 
-  await kv.set(
-    `user:${username}`,
-    token
-  );
-
-  res.json({
+  return res.status(200).json({
+    success: true,
     username,
     token
   });

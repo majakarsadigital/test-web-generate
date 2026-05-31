@@ -1,24 +1,30 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 
-export default async function handler(
-  req,
-  res
-){
+const redis = Redis.fromEnv();
+
+export default async function handler(req, res) {
+
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      error: "Method not allowed"
+    });
+  }
 
   const { token } = req.body;
 
   const data =
-    await kv.get(`token:${token}`);
+    await redis.get(
+      `token:${token}`
+    );
 
-  if(!data){
-
-    return res.json({
-      valid:false
+  if (!data) {
+    return res.status(404).json({
+      valid: false
     });
   }
 
-  res.json({
-    valid:true,
-    username:data.username
+  return res.status(200).json({
+    valid: true,
+    username: data.username
   });
 }
