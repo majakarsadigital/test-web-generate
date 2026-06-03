@@ -39,6 +39,7 @@ async function verifyToken() {
     document.getElementById(
       "token"
     ).value;
+  const result = document.getElementById("result");
 
   const response =
     await fetch(
@@ -63,6 +64,9 @@ async function verifyToken() {
       "result"
     ).textContent =
       `Valid! Username: ${data.username}`;
+
+       result.classList.add("success");
+      result.innerHTML = "🎉 Login berhasil!";
   } else {
     document.getElementById(
       "result"

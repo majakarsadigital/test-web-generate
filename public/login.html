@@ -1,26 +1,221 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Verify Token</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Kartunis</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Comic Sans MS', cursive, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#7dd3fc,#38bdf8);
+}
+
+.login-card{
+    width:350px;
+    background:white;
+    padding:35px;
+    border-radius:30px;
+    text-align:center;
+    box-shadow:8px 8px 0px #0f172a;
+    border:4px solid #0f172a;
+}
+
+.wheel{
+    width:120px;
+    height:120px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    border:5px solid #0f172a;
+    background:
+    conic-gradient(
+        #ef4444 0deg 45deg,
+        #f59e0b 45deg 90deg,
+        #22c55e 90deg 135deg,
+        #3b82f6 135deg 180deg,
+        #8b5cf6 180deg 225deg,
+        #ec4899 225deg 270deg,
+        #14b8a6 270deg 315deg,
+        #eab308 315deg 360deg
+    );
+    position:relative;
+    animation:spin 12s linear infinite;
+}
+
+.center-dot{
+    position:absolute;
+    width:24px;
+    height:24px;
+    background:#fff;
+    border:4px solid #0f172a;
+    border-radius:50%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+}
+
+.wheel::before{
+    content:"";
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    width:0;
+    height:0;
+    border-left:12px solid transparent;
+    border-right:12px solid transparent;
+    border-top:20px solid #0f172a;
+}
+
+@keyframes spin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+h2{
+    color:#0f172a;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border-radius:15px;
+    border:3px solid #0f172a;
+    font-size:16px;
+    margin-bottom:15px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#3b82f6;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:15px;
+    background:#f97316;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:4px 4px 0px #9a3412;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+button:active{
+    transform:translateY(2px);
+    box-shadow:2px 2px 0px #9a3412;
+}
+
+#result{
+    margin-top:18px;
+    padding:12px 16px;
+    min-height:48px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:15px;
+    font-weight:700;
+    text-align:center;
+
+    background:#f8fafc;
+    border:3px dashed #0f172a;
+    border-radius:16px;
+
+    color:#334155;
+
+    transition:all .3s ease;
+}
+
+/* Pesan sukses */
+#result.success{
+    background:#dcfce7;
+    border-color:#22c55e;
+    color:#166534;
+    animation:bounce .4s ease;
+}
+
+/* Pesan error */
+#result.error{
+    background:#fee2e2;
+    border-color:#ef4444;
+    color:#991b1b;
+    animation:shake .4s ease;
+}
+
+@keyframes bounce{
+    0%{
+        transform:scale(.9);
+    }
+    60%{
+        transform:scale(1.05);
+    }
+    100%{
+        transform:scale(1);
+    }
+}
+
+@keyframes shake{
+    0%,100%{
+        transform:translateX(0);
+    }
+    25%{
+        transform:translateX(-5px);
+    }
+    75%{
+        transform:translateX(5px);
+    }
+}
+</style>
 </head>
 <body>
 
-  <h2>Login</h2>
+<div class="login-card">
 
-  <input
-    type="text"
-    id="token"
-    placeholder="Masukkan token"
-  />
+    <div class="wheel">
+      <div class="center-dot"></div>
+  </div>
 
-  <button onclick="verifyToken()">
-    Login
-  </button>
+    <h2>🎨 TEST LOGIN </h2>
 
-  <p id="result"></p>
+    <input
+        type="text"
+        id="token"
+        placeholder="Masukkan token..."
+    >
 
-  <script src="app.js"></script>
+    <button onclick="verifyToken()">
+        🚀 Login
+    </button>
+
+    <p id="result"></p>
+
+</div>
+
+<script src="app.js"></script>
 
 </body>
 </html>
