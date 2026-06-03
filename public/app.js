@@ -60,13 +60,8 @@ async function verifyToken() {
     await response.json();
 
   if (data.valid) {
-    document.getElementById(
-      "result"
-    ).textContent =
-      `Valid! Username: ${data.username}`;
-
-       result.classList.add("success");
-      result.innerHTML = "🎉 Login berhasil!";
+      result.classList.add("success");
+      result.innerHTML = "🎉 Login berhasil! <br> Username: ${data.username}";
   } else {
     document.getElementById(
       "result"
