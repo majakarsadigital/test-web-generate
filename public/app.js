@@ -32,3 +32,41 @@ async function generateToken() {
       2
     );
 }
+
+
+async function verifyToken() {
+  const token =
+    document.getElementById(
+      "token"
+    ).value;
+
+  const response =
+    await fetch(
+      "/api/verify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          token,
+        }),
+      }
+    );
+
+  const data =
+    await response.json();
+
+  if (data.valid) {
+    document.getElementById(
+      "result"
+    ).textContent =
+      `Valid! Username: ${data.username}`;
+  } else {
+    document.getElementById(
+      "result"
+    ).textContent =
+      "Token tidak valid.";
+  }
+}
