@@ -61,11 +61,10 @@ async function verifyToken() {
 
   if (data.valid) {
       result.classList.add("success");
-      result.innerHTML = "🎉 Login berhasil! <br> Username: ${data.username}";
+      result.textContent = `🎉 Login berhasil! | Valid! Username: ${data.username}`;
   } else {
-    document.getElementById(
-      "result"
-    ).textContent =
+    result.classList.add("error");
+    result.textContent =
       "Token tidak valid.";
   }
 }
