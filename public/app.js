@@ -84,7 +84,7 @@ async function verifyToken() {
               "application/json",
           },
           body: JSON.stringify({
-            tokenVal,
+            token: tokenVal
           }),
         }
       );
