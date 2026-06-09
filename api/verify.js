@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     const data = await redis.get(`token:${token}`);
 
     if (!data) {
-      return res.status(404).json({ valid: false });
+      return res.status(404).json({ success: false });
     }
 
     // 2. Validasi struktur data dari Redis
@@ -26,8 +26,10 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Invalid token data" });
     }
 
-    return res.status(200).json({ valid: true, username: data.username });
-
+    return res.status(200).json({
+      success: true,
+      username: data.username
+    });
   } catch (err) {
     // 3. Handle Redis error
     console.error("Redis error:", err.message); // log pesan, bukan token
