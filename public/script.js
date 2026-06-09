@@ -198,7 +198,3 @@ document.addEventListener('DOMContentLoaded',()=>{
   demos.forEach(n=>peserta.push(n));
   renderList(); updateStats();
 });
-
-input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') verifyToken();
-});

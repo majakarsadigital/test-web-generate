@@ -39,8 +39,6 @@ const content  = document.getElementById('main-content');
 const errMsg   = document.getElementById('error-msg');
 const input    = document.getElementById('token');
 const btn      = document.getElementById('login-btn');
-const tokenVal = input.value.trim();
-
 
 function closeDialog() {
   dialog.classList.add('closing');
@@ -64,6 +62,7 @@ function resetError() {
 }
 
 async function verifyToken() {
+  const tokenVal = input.value.trim();
 
   if (!tokenVal) {
     setError('Token tidak boleh kosong!');
@@ -85,7 +84,7 @@ async function verifyToken() {
               "application/json",
           },
           body: JSON.stringify({
-            token,
+            tokenVal,
           }),
         }
       );
@@ -107,3 +106,11 @@ async function verifyToken() {
     btn.disabled           = false;
   }
 }
+
+input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifyToken();
+});
+
+btn.addEventListener('click', () => {
+  verifyToken()
+});
