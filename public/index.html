@@ -1,29 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Generate Token</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Gate Demo</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="card">
+  <!-- ════ KONTEN UTAMA ════ -->
+  <div id="main-content">
+    <div class="demo-header">
+      <span style="font-size:28px;">📊</span>
+      <div>
+        <h1>Dashboard Utama</h1>
+        <p>Selamat datang kembali! Ini konten yang hanya bisa diakses setelah login.</p>
+      </div>
+    </div>
 
-  <h2>Generate Token</h2>
+    
+    <div class="deco-star" style="top:8%;left:5%;font-size:2rem;animation-duration:7s">★</div>
+    <div class="deco-star" style="top:15%;right:7%;font-size:2.5rem;animation-duration:10s;animation-direction:reverse">✦</div>
+    <div class="deco-star" style="top:60%;left:3%;font-size:1.8rem;animation-duration:6s">✸</div>
+    <div class="deco-star" style="top:75%;right:4%;font-size:2rem;animation-duration:9s;animation-direction:reverse">★</div>
+    <div class="deco-star" style="top:40%;left:2%;font-size:1.2rem;animation-duration:5s">✦</div>
+    <div class="deco-star" style="top:50%;right:2%;font-size:1.4rem;animation-duration:11s">✸</div>
 
-  <input
-    id="username"
-    placeholder="Username"
-  >
+    <div class="confetti-container" id="confetti"></div>
 
-  <button onclick="generateToken()">
-    Generate
-  </button>
+    <!-- Win overlay -->
+    <div class="win-overlay" id="winOverlay">
+    <div class="win-card">
+        <div class="win-card-stripe"></div>
+        <span class="win-trophy">🏆</span>
+        <div class="win-title">SELAMAT!</div>
+        <div class="win-rank" id="winRankText">Pemenang ke-1 🎊</div>
+        <div class="win-name" id="winName">—</div>
+        <button class="btn-close-win" onclick="closeWin()">✅ Lanjutkan!</button>
+    </div>
+    </div>
 
-  <pre id="result"></pre>
+    <!-- Toast -->
+    <div class="toast" id="toast">—</div>
 
-</div>
+    <div class="container" style="position:relative;z-index:1">
 
-<script src="app.js"></script>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-badge">🎪 Game Undian Seru!</div>
+        <h1>🎰 LUCKY <span>DRAW</span>!</h1>
+        <div class="header-sub">✦ Siapa Beruntung Hari Ini? ✦</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+        <div class="stat-num" id="statPeserta">0</div>
+        <div class="stat-label">Peserta</div>
+        </div>
+        <div class="stat-card">
+        <div class="stat-num" id="statPemenang">0</div>
+        <div class="stat-label">Pemenang</div>
+        </div>
+        <div class="stat-card">
+        <div class="stat-num" id="statSisa">0</div>
+        <div class="stat-label">Sisa</div>
+        </div>
+        <div class="stat-card">
+        <div class="stat-num" id="statRound">1</div>
+        <div class="stat-label">Putaran</div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="game-area">
+        <!-- Peserta -->
+        <div class="panel panel-left">
+        <div class="panel-title"><span class="icon">👥</span>Daftar Peserta</div>
+        <div class="input-row">
+            <input type="text" id="nameInput" placeholder="Nama peserta..." maxlength="30"/>
+            <button class="btn btn-add" onclick="addPeserta()">+ TAMBAH</button>
+        </div>
+        <div class="quick-add-row" id="quickChips"></div>
+        <div class="peserta-list" id="pesertaList">
+            <div class="empty-state">
+            <span class="big">🎪</span>
+            Belum ada peserta!<br>Yuk tambahkan nama dulu~
+            </div>
+        </div>
+        <button class="btn btn-clear" onclick="clearAll()">🗑️ Hapus semua peserta</button>
+        </div>
+
+        <!-- Spin -->
+        <div class="panel panel-right">
+        <div class="panel-title"><span class="icon">🎯</span>Putar Undian</div>
+
+        <div class="slot-display">
+            <span class="slot-corner tl">★</span>
+            <span class="slot-corner tr">★</span>
+            <span class="slot-corner bl">★</span>
+            <span class="slot-corner br">★</span>
+            <div class="slot-name" id="slotName">???</div>
+            <div class="slot-sub" id="slotSub">Siap diputar!</div>
+        </div>
+
+        <div class="options-row">
+            <button class="toggle-btn active" id="toggleRemove" onclick="toggleOption('remove')">🚫 Hapus pemenang</button>
+            <button class="toggle-btn" id="toggleSound" onclick="toggleOption('sound')">🔊 Suara</button>
+            <button class="toggle-btn" id="toggleBig" onclick="toggleOption('big')">🎉 Pop-up besar</button>
+        </div>
+
+        <button class="btn btn-spin" id="spinBtn" onclick="spinDraw()">
+            🎰 PUTAR UNDIAN!
+        </button>
+        <button class="btn btn-clear" style="margin-top:8px" onclick="resetWinners()">🔄 Reset pemenang</button>
+        </div>
+    </div>
+
+    <!-- Winners -->
+    <div class="winners-panel">
+        <div class="panel-title"><span class="icon">🏆</span>Daftar Pemenang</div>
+        <div class="winners-grid" id="winnersGrid">
+        <div class="winners-empty">Belum ada pemenang — yuk putar undian!</div>
+        </div>
+    </div>
+
+    <div class="footer">★ LUCKY DRAW — Selamat Bermain! ★</div>
+    </div>
+
+  </div>
+
+  <!-- ════ AUTH OVERLAY ════ -->
+  <div id="auth-overlay">
+    <!-- Dekorasi blob -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="shape-d s1"></div>
+    <div class="shape-d s2"></div>
+
+    <!-- Dialog card -->
+    <div class="dialog" id="login-dialog">
+      <div class="dialog-header">
+        <div class="dialog-icon">🔐</div>
+        <h1 class="dialog-title">Selamat Datang!</h1>
+        <p class="dialog-subtitle">Masukkan token untuk melanjutkan</p>
+      </div>
+
+      <div class="field">
+        <label for="token">Token</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
+          <input
+            type="text"
+            id="token"
+            placeholder="Masukkan token..."
+          />
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-msg">⚠️ Token tidak boleh kosong!</div>
+
+      <button id="login-btn" onclick="verifyToken()">
+        🚀 Login
+      </button>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
