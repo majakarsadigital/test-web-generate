@@ -1,29 +1,595 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Generate Token</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+    :root {
+      --black: #0d0d0d;
+      --white: #f5f0e8;
+      --yellow: #ffe135;
+      --pink: #ff4d8d;
+      --blue: #1a1aff;
+      --green: #00c472;
+      --border: 2.5px solid #0d0d0d;
+      --shadow: 4px 4px 0px #0d0d0d;
+      --shadow-lg: 6px 6px 0px #0d0d0d;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--black);
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-bottom: var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--pink); }
+
+    .header-badge {
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border: var(--border);
+      border-radius: 2px;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 760px) {
+      .page { grid-template-columns: 1fr; }
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: #fff;
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: var(--black);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-header .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--pink);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .card-body { padding: 22px 20px; }
+
+    /* ── FORM ── */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: var(--border);
+      border-radius: 2px;
+      background: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--black);
+      outline: none;
+      transition: box-shadow 0.15s;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      box-shadow: var(--shadow);
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%230d0d0d' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 11px 20px;
+      border: var(--border);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.08s, box-shadow 0.08s;
+      box-shadow: var(--shadow);
+    }
+
+    .btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0px var(--black);
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .btn-secondary {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    .btn-danger {
+      background: var(--pink);
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 0.72rem;
+      box-shadow: 2px 2px 0px var(--black);
+    }
+
+    .btn-refresh {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: var(--shadow);
+    }
+
+    /* ── RESULT BLOCK ── */
+    #result-block {
+      margin-top: 18px;
+      display: none;
+    }
+
+    #result-block.show { display: block; }
+
+    .result-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .token-box {
+      background: var(--black);
+      color: var(--green);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      padding: 14px 16px;
+      border: var(--border);
+      border-radius: 2px;
+      word-break: break-all;
+      line-height: 1.6;
+      position: relative;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--yellow);
+      border: 1.5px solid var(--black);
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      cursor: pointer;
+      color: var(--black);
+    }
+
+    .copy-btn:hover { background: #ffd700; }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      padding: 14px 16px;
+      border-radius: 2px;
+    }
+
+    .stat-value {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #777;
+      margin-top: 5px;
+    }
+
+    .stat-card.accent-yellow { border-top: 4px solid var(--yellow); }
+    .stat-card.accent-pink   { border-top: 4px solid var(--pink); }
+    .stat-card.accent-green  { border-top: 4px solid var(--green); }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      background: var(--black);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1.5px solid #e0dbd0;
+      transition: background 0.1s;
+    }
+
+    tbody tr:hover { background: #fdf8ee; }
+
+    tbody td {
+      padding: 11px 14px;
+      vertical-align: middle;
+    }
+
+    .td-mono {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: #333;
+    }
+
+    .td-token {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: #555;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 2px;
+      border: 1.5px solid var(--black);
+      text-transform: uppercase;
+    }
+
+    .badge-active  { background: var(--green);  color: #fff; border-color: var(--green); }
+    .badge-expired { background: #ccc;           color: #666; border-color: #aaa; }
+    .badge-admin   { background: var(--blue);    color: #fff; border-color: var(--blue); }
+    .badge-user    { background: var(--white);   color: var(--black); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #aaa;
+    }
+
+    .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .empty-state p {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--black);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 12px 20px;
+      border: var(--border);
+      border-radius: 2px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 999;
+      max-width: 300px;
+    }
+
+    #toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── LOADER ── */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2.5px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1.5px dashed #ccc;
+      margin: 18px 0;
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
+<header>
+  <div class="logo">TOKEN<span>.</span>DASH</div>
+  <div class="header-badge">⬡ Redis-backed</div>
+</header>
 
-  <h2>Generate Token</h2>
+<div class="page">
 
-  <input
-    id="username"
-    placeholder="Username"
-  >
+  <!-- ── LEFT PANEL: GENERATE ── -->
+  <div>
+    <div class="card">
+      <div class="card-header"><span class="dot"></span> Generate Token</div>
+      <div class="card-body">
 
-  <button onclick="generateToken()">
-    Generate
-  </button>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" placeholder="e.g. john_doe" autocomplete="off" />
+        </div>
 
-  <pre id="result"></pre>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="role">Role</label>
+            <select id="role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="editor">Editor</option>
+              <option value="viewer">Viewer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="expires">Expires (days)</label>
+            <input type="number" id="expires" value="30" min="1" max="365" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="note">Note (optional)</label>
+          <input type="text" id="note" placeholder="e.g. Production access" />
+        </div>
+
+        <button class="btn btn-primary" id="btn-generate" onclick="generateToken()">
+          ⚡ Generate Token
+        </button>
+
+        <div id="result-block">
+          <hr class="divider" />
+          <div class="result-label">Generated Token</div>
+          <div class="token-box" id="token-output">
+            <button class="copy-btn" onclick="copyToken()">COPY</button>
+            <span id="token-text">—</span>
+          </div>
+          <div style="margin-top:10px; font-size:0.78rem; color:#777;">
+            Expires: <strong id="token-expires">—</strong> &nbsp;·&nbsp; Role: <strong id="token-role">—</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL: DATABASE ── -->
+  <div>
+    <div class="stats-row">
+      <div class="stat-card accent-yellow">
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Tokens</div>
+      </div>
+      <div class="stat-card accent-green">
+        <div class="stat-value" id="stat-active">—</div>
+        <div class="stat-label">Active</div>
+      </div>
+      <div class="stat-card accent-pink">
+        <div class="stat-value" id="stat-expired">—</div>
+        <div class="stat-label">Expired</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="dot"></span> Token Database
+        <button class="btn btn-refresh" style="margin-left:auto; padding:5px 12px; font-size:0.7rem;" onclick="loadTokens()">
+          ↺ Refresh
+        </button>
+      </div>
+      <div class="card-body" style="padding: 16px;">
+
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="Search username or token…" oninput="filterTable()" />
+          <select id="filter-role" onchange="filterTable()" style="width:120px;">
+            <option value="">All roles</option>
+            <option value="admin">Admin</option>
+            <option value="editor">Editor</option>
+            <option value="user">User</option>
+            <option value="viewer">Viewer</option>
+          </select>
+          <select id="filter-status" onchange="filterTable()" style="width:130px;">
+            <option value="">All status</option>
+            <option value="active">Active</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table id="tokens-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Token</th>
+                <th>Role</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tokens-body">
+              <tr>
+                <td colspan="6">
+                  <div class="empty-state">
+                    <span class="empty-icon">📭</span>
+                    <p>Loading tokens…</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
 </div>
 
-<script src="app.js"></script>
+<!-- ── TOAST ── -->
+<div id="toast"></div>
 
+<script src="app.js"></script>
+<script>
+  // Auto-load on page open
+  window.addEventListener('DOMContentLoaded', loadTokens);
+</script>
 </body>
 </html>
