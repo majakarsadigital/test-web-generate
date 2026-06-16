@@ -101,7 +101,7 @@ async function generateToken() {
 // ──────────────────────────────────────────────
 async function loadTokens() {
   const tbody = document.getElementById('tokens-body');
-  tbody.innerHTML = `<tr><td colspan="6">
+  tbody.innerHTML = `<tr><td colspan="4">
     <div class="empty-state">
       <span class="empty-icon"><span class="spinner" style="width:24px;height:24px;border-width:3px;"></span></span>
       <p>Memuat data dari Redis…</p>
@@ -121,13 +121,14 @@ async function loadTokens() {
 
     const data = await response.json();
     // Support both { tokens: [...] } and plain array
-    _allTokens = Array.isArray(data) ? data : (data.tokens || []);
+    const tokenValue = allKeys[i].replace(/^token:/, '');
+    _allTokens = Array.isArray(data) ? data : (data.tokens || tokenValue);
 
     renderTable(_allTokens);
     updateStats(_allTokens);
 
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6">
+    tbody.innerHTML = `<tr><td colspan="4">
       <div class="empty-state">
         <span class="empty-icon">⚠️</span>
         <p>Gagal memuat data: ${escHtml(err.message)}</p>
@@ -170,7 +171,7 @@ function renderTable(tokens) {
   const tbody = document.getElementById('tokens-body');
 
   if (!tokens.length) {
-    tbody.innerHTML = `<tr><td colspan="6">
+    tbody.innerHTML = `<tr><td colspan="4">
       <div class="empty-state">
         <span class="empty-icon">📭</span>
         <p>Belum ada token tersimpan</p>
@@ -183,13 +184,12 @@ function renderTable(tokens) {
     const active  = isActive(t.expiresAt);
     const status  = active ? 'active' : 'expired';
     const roleCls = t.role === 'admin' ? 'badge-admin' : 'badge-user';
+    const tokenValue = allKeys[i].replace(/^token:/, '');
 
     return `<tr>
       <td class="td-mono">${escHtml(t.username)}</td>
       <td class="td-token" title="${escHtml(t.token)}">${escHtml(truncate(t.token, 24))}</td>
       <td><span class="badge ${roleCls}">${escHtml(t.role || 'user')}</span></td>
-      <td class="td-mono" style="font-size:0.75rem;">${formatDate(t.expiresAt)}</td>
-      <td><span class="badge badge-${status}">${status}</span></td>
       <td>
         <button class="btn btn-danger" onclick="revokeToken('${escAttr(t.username)}')">
           Revoke
