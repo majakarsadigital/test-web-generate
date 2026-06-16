@@ -120,9 +120,9 @@ async function loadTokens() {
     }
 
     const data = await response.json();
+    console.log('Ini data : ' + JSON.stringify(data));
     // Support both { tokens: [...] } and plain array
-    const tokenValue = allKeys[i].replace(/^token:/, '');
-    _allTokens = Array.isArray(data) ? data : (data.tokens || tokenValue);
+    _allTokens = Array.isArray(data) ? data : (data.tokens || []);
 
     renderTable(_allTokens);
     updateStats(_allTokens);
