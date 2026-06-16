@@ -28,6 +28,149 @@
       min-height: 100vh;
     }
 
+    /* ── AUTH OVERLAY ── */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 13, 13, 0.82);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.3s;
+    }
+
+    #auth-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #login-dialog {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      border-radius: 3px;
+      width: 100%;
+      max-width: 400px;
+      margin: 16px;
+      animation: dialogIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    #login-dialog.closing {
+      animation: dialogOut 0.2s ease-in both;
+    }
+
+    @keyframes dialogIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes dialogOut {
+      from { opacity: 1; transform: translateY(0) scale(1); }
+      to   { opacity: 0; transform: translateY(16px) scale(0.97); }
+    }
+
+    .dialog-header {
+      background: var(--black);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dialog-header .dot {
+      width: 8px; height: 8px;
+      background: var(--pink);
+      border-radius: 50%;
+    }
+
+    .dialog-body {
+      padding: 24px 22px 22px;
+    }
+
+    .dialog-body p {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    #token {
+      width: 100%;
+      padding: 11px 14px;
+      border: var(--border);
+      border-radius: 2px;
+      background: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--black);
+      outline: none;
+      transition: box-shadow 0.15s;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    #token:focus { box-shadow: var(--shadow); }
+
+    #error-msg {
+      display: none;
+      font-size: 0.78rem;
+      color: #E24B4A;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    #login-btn {
+      width: 100%;
+      padding: 12px 20px;
+      background: var(--yellow);
+      color: var(--black);
+      border: var(--border);
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+
+    #login-btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0px var(--black);
+    }
+
+    #login-btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── MAIN CONTENT (locked by default) ── */
+    #main-content {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.4s ease;
+    }
+
+    #main-content.unlocked {
+      filter: none;
+      pointer-events: auto;
+      user-select: auto;
+    }
+
     /* ── HEADER ── */
     header {
       background: var(--black);
@@ -101,8 +244,7 @@
     }
 
     .card-header .dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background: var(--pink);
       border-radius: 50%;
       display: inline-block;
@@ -111,9 +253,7 @@
     .card-body { padding: 22px 20px; }
 
     /* ── FORM ── */
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
 
     label {
       display: block;
@@ -302,9 +442,7 @@
     .stat-card.accent-green  { border-top: 4px solid var(--green); }
 
     /* ── TABLE ── */
-    .table-wrap {
-      overflow-x: auto;
-    }
+    .table-wrap { overflow-x: auto; }
 
     table {
       width: 100%;
@@ -436,10 +574,7 @@
       flex-wrap: wrap;
     }
 
-    .filter-bar input {
-      flex: 1;
-      min-width: 160px;
-    }
+    .filter-bar input { flex: 1; min-width: 160px; }
 
     /* ── DIVIDER ── */
     .divider {
@@ -451,145 +586,181 @@
 </head>
 <body>
 
-<header>
-  <div class="logo">TOKEN<span>.</span>DASH</div>
-  <div class="header-badge">⬡ Redis-backed</div>
-</header>
+<!-- ── AUTH OVERLAY ── -->
+<div id="auth-overlay">
+  <div id="login-dialog">
+    <div class="dialog-header">
+      <span class="dot"></span> Akses Dashboard
+    </div>
+    <div class="dialog-body">
+      <p>Masukkan token akses Anda untuk membuka dashboard.</p>
+      <input
+        type="text"
+        id="token"
+        placeholder="XXXXXXXXXXXXXXXX"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div id="error-msg"></div>
+      <button id="login-btn">🚀 Login</button>
+    </div>
+  </div>
+</div>
 
-<div class="page">
+<!-- ── MAIN CONTENT ── -->
+<div id="main-content">
 
-  <!-- ── LEFT PANEL: GENERATE ── -->
-  <div>
-    <div class="card">
-      <div class="card-header"><span class="dot"></span> Generate Token</div>
-      <div class="card-body">
+  <header>
+    <div class="logo">TOKEN<span>.</span>DASH</div>
+    <div class="header-badge">⬡ Redis-backed</div>
+  </header>
 
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="e.g. john_doe" autocomplete="off" />
-        </div>
+  <div class="page">
 
-        <div class="form-row">
+    <!-- ── LEFT PANEL: GENERATE ── -->
+    <div>
+      <div class="card">
+        <div class="card-header"><span class="dot"></span> Generate Token</div>
+        <div class="card-body">
+
           <div class="form-group">
-            <label for="role">Role</label>
-            <select id="role">
-              <option value="user">User</option>
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="e.g. john_doe" autocomplete="off" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="role">Role</label>
+              <select id="role">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="editor">Editor</option>
+                <option value="viewer">Viewer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="expires">Expires (days)</label>
+              <input type="number" id="expires" value="30" min="1" max="365" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="note">Note (optional)</label>
+            <input type="text" id="note" placeholder="e.g. Production access" />
+          </div>
+
+          <button class="btn btn-primary" id="btn-generate" onclick="generateToken()">
+            ⚡ Generate Token
+          </button>
+
+          <div id="result-block">
+            <hr class="divider" />
+            <div class="result-label">Generated Token</div>
+            <div class="token-box" id="token-output">
+              <button class="copy-btn" onclick="copyToken()">COPY</button>
+              <span id="token-text">—</span>
+            </div>
+            <div style="margin-top:10px; font-size:0.78rem; color:#777;">
+              Expires: <strong id="token-expires">—</strong> &nbsp;·&nbsp; Role: <strong id="token-role">—</strong>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT PANEL: DATABASE ── -->
+    <div>
+      <div class="stats-row">
+        <div class="stat-card accent-yellow">
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-label">Total Tokens</div>
+        </div>
+        <div class="stat-card accent-green">
+          <div class="stat-value" id="stat-active">—</div>
+          <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-card accent-pink">
+          <div class="stat-value" id="stat-expired">—</div>
+          <div class="stat-label">Expired</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="dot"></span> Token Database
+          <button class="btn btn-refresh" style="margin-left:auto; padding:5px 12px; font-size:0.7rem;" onclick="loadTokens()">
+            ↺ Refresh
+          </button>
+        </div>
+        <div class="card-body" style="padding: 16px;">
+
+          <div class="filter-bar">
+            <input type="text" id="search-input" placeholder="Search username atau token…" oninput="filterTable()" />
+            <select id="filter-role" onchange="filterTable()" style="width:120px;">
+              <option value="">All roles</option>
               <option value="admin">Admin</option>
               <option value="editor">Editor</option>
+              <option value="user">User</option>
               <option value="viewer">Viewer</option>
             </select>
+            <select id="filter-status" onchange="filterTable()" style="width:130px;">
+              <option value="">All status</option>
+              <option value="active">Active</option>
+              <option value="expired">Expired</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label for="expires">Expires (days)</label>
-            <input type="number" id="expires" value="30" min="1" max="365" />
+
+          <div class="table-wrap">
+            <table id="tokens-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Token</th>
+                  <th>Role</th>
+                  <th>Expires</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="tokens-body">
+                <tr>
+                  <td colspan="6">
+                    <div class="empty-state">
+                      <span class="empty-icon">📭</span>
+                      <p>Login terlebih dahulu untuk melihat data…</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+
         </div>
-
-        <div class="form-group">
-          <label for="note">Note (optional)</label>
-          <input type="text" id="note" placeholder="e.g. Production access" />
-        </div>
-
-        <button class="btn btn-primary" id="btn-generate" onclick="generateToken()">
-          ⚡ Generate Token
-        </button>
-
-        <div id="result-block">
-          <hr class="divider" />
-          <div class="result-label">Generated Token</div>
-          <div class="token-box" id="token-output">
-            <button class="copy-btn" onclick="copyToken()">COPY</button>
-            <span id="token-text">—</span>
-          </div>
-          <div style="margin-top:10px; font-size:0.78rem; color:#777;">
-            Expires: <strong id="token-expires">—</strong> &nbsp;·&nbsp; Role: <strong id="token-role">—</strong>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- ── RIGHT PANEL: DATABASE ── -->
-  <div>
-    <div class="stats-row">
-      <div class="stat-card accent-yellow">
-        <div class="stat-value" id="stat-total">—</div>
-        <div class="stat-label">Total Tokens</div>
-      </div>
-      <div class="stat-card accent-green">
-        <div class="stat-value" id="stat-active">—</div>
-        <div class="stat-label">Active</div>
-      </div>
-      <div class="stat-card accent-pink">
-        <div class="stat-value" id="stat-expired">—</div>
-        <div class="stat-label">Expired</div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">
-        <span class="dot"></span> Token Database
-        <button class="btn btn-refresh" style="margin-left:auto; padding:5px 12px; font-size:0.7rem;" onclick="loadTokens()">
-          ↺ Refresh
-        </button>
-      </div>
-      <div class="card-body" style="padding: 16px;">
+  </div><!-- /.page -->
 
-        <div class="filter-bar">
-          <input type="text" id="search-input" placeholder="Search username or token…" oninput="filterTable()" />
-          <select id="filter-role" onchange="filterTable()" style="width:120px;">
-            <option value="">All roles</option>
-            <option value="admin">Admin</option>
-            <option value="editor">Editor</option>
-            <option value="user">User</option>
-            <option value="viewer">Viewer</option>
-          </select>
-          <select id="filter-status" onchange="filterTable()" style="width:130px;">
-            <option value="">All status</option>
-            <option value="active">Active</option>
-            <option value="expired">Expired</option>
-          </select>
-        </div>
-
-        <div class="table-wrap">
-          <table id="tokens-table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Token</th>
-                <th>Role</th>
-                <th>Expires</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="tokens-body">
-              <tr>
-                <td colspan="6">
-                  <div class="empty-state">
-                    <span class="empty-icon">📭</span>
-                    <p>Loading tokens…</p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-</div>
+</div><!-- /#main-content -->
 
 <!-- ── TOAST ── -->
 <div id="toast"></div>
 
 <script src="app.js"></script>
 <script>
-  // Auto-load on page open
-  window.addEventListener('DOMContentLoaded', loadTokens);
+  const _observer = new MutationObserver(() => {
+    const content = document.getElementById('main-content');
+    if (content.classList.contains('unlocked')) {
+      loadTokens();
+      _observer.disconnect();
+    }
+  });
+  _observer.observe(
+    document.getElementById('main-content'),
+    { attributes: true, attributeFilter: ['class'] }
+  );
 </script>
+
 </body>
 </html>

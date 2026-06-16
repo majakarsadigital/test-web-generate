@@ -1,4 +1,5 @@
-let peserta = [];
+const categories = ['Legendary', 'Langka', 'Common'];
+const maxSpins = 3;
 let winners = [];
 let isRolling = false;
 let removeWinner = true;
@@ -6,82 +7,38 @@ let soundOn = false;
 let bigAnim = false;
 let round = 1;
 
-const presets = ['Tim A','Tim B','Tim C','Grup 1','Grup 2','Peserta X'];
-
-function initChips(){
-  const row = document.getElementById('quickChips');
-  presets.forEach(name => {
-    const c = document.createElement('div');
-    c.className = 'quick-chip';
-    c.textContent = '+ ' + name;
-    c.onclick = () => { document.getElementById('nameInput').value = name; addPeserta(); };
-    row.appendChild(c);
-  });
-}
-
-function addPeserta(){
-  const input = document.getElementById('nameInput');
-  const name = input.value.trim();
-  if(!name){ showToast('⚠️ Nama tidak boleh kosong!'); return; }
-  if(peserta.includes(name)){ showToast('⚠️ Nama sudah ada!'); return; }
-  peserta.push(name);
-  input.value='';
-  renderList(); updateStats();
-  showToast('✅ ' + name + ' masuk!');
-}
-
-function removePeserta(idx){
-  const name = peserta[idx];
-  peserta.splice(idx,1);
-  renderList(); updateStats();
-  showToast('🗑️ ' + name + ' dihapus');
-}
-
-function clearAll(){
-  if(!peserta.length){ showToast('Tidak ada peserta'); return; }
-  if(confirm('Hapus semua peserta?')){
-    peserta=[];
-    renderList(); updateStats();
-    showToast('🗑️ Semua peserta dihapus');
-  }
-}
-
 function renderList(){
   const list = document.getElementById('pesertaList');
-  if(!peserta.length){
-    list.innerHTML=`<div class="empty-state"><span class="big">🎪</span>Belum ada peserta!<br>Yuk tambahkan nama dulu~</div>`;
-    return;
-  }
-  list.innerHTML = peserta.map((name,i) => {
-    const won = winners.some(w=>w.name===name);
-    return `<div class="peserta-item ${won?'winner-was':''}">
-      <span class="peserta-num">${i+1}</span>
-      <span class="peserta-name">${escapeHtml(name)} ${won?'🏆':''}</span>
-      <button class="peserta-del" onclick="removePeserta(${i})">✕</button>
-    </div>`;
-  }).join('');
+  const icons = { 'Legendary': '⭐', 'Langka': '✨', 'Common': '🔷' };
+
+  list.innerHTML = '<div class="category-section">' +
+    categories.map(cat => {
+      return `<div class="category-item">
+        ${icons[cat]} <strong>${cat}</strong>
+      </div>`;
+    }).join('') +
+    '</div>';
 }
 
 function escapeHtml(s){
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function updateStats(){
-  const rem = removeWinner ? peserta.filter(n=>!winners.some(w=>w.name===n)) : peserta;
-  document.getElementById('statPeserta').textContent = peserta.length;
-  document.getElementById('statPemenang').textContent = winners.length;
-  document.getElementById('statSisa').textContent = rem.length;
-  document.getElementById('statRound').textContent = round;
+function getEligible() {
+  return categories;
 }
 
-function getEligible(){
-  return removeWinner ? peserta.filter(n=>!winners.some(w=>w.name===n)) : [...peserta];
+function sleep(ms){
+  return new Promise(r=>setTimeout(r,ms));
 }
 
 async function spinDraw(){
   if(isRolling) return;
+  if(winners.length >= maxSpins){
+    showDialog('⚠️', 'Kesempatan Habis!', 'Anda sudah spin 3 kali. Gunakan tombol "Hapus Semua" untuk reset.');
+    return;
+  }
   const eligible = getEligible();
-  if(!eligible.length){ showToast('⚠️ Tidak ada peserta tersisa!'); return; }
 
   isRolling=true;
   const btn=document.getElementById('spinBtn');
@@ -105,22 +62,26 @@ async function spinDraw(){
 
   slotName.className='slot-name';
   slotName.textContent=winner;
-  slotSub.textContent='🎉 Pemenang ke-'+winners.length+'!';
+  slotSub.textContent=`🎉 Pemenang ke-${winners.length}!`;
   slotSub.className='slot-sub winner-text';
 
-  renderList(); renderWinners(); updateStats();
+  renderWinners(); updateStats();
   spawnConfetti();
   await sleep(350);
 
-  if(document.getElementById('toggleBig').classList.contains('active')){
-    showWinOverlay(winner,winners.length);
-  }
+  showWinOverlay(winner, winners.length, winner);
 
   btn.disabled=false; btn.textContent='🎰 PUTAR UNDIAN!';
   isRolling=false;
 }
 
-function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function updateStats(){
+  document.getElementById('statPeserta').textContent = categories.length;
+  document.getElementById('statPemenang').textContent = winners.length;
+  document.getElementById('statSisa').textContent = Math.max(0, maxSpins - winners.length);
+  document.getElementById('statRound').textContent = round;
+}
+
 
 function renderWinners(){
   const grid=document.getElementById('winnersGrid');
@@ -136,17 +97,6 @@ function renderWinners(){
     </div>`).join('');
 }
 
-function resetWinners(){
-  if(!winners.length){ showToast('Belum ada pemenang'); return; }
-  winners=[]; round=1;
-  document.getElementById('slotName').textContent='???';
-  document.getElementById('slotName').className='slot-name';
-  document.getElementById('slotSub').textContent='Siap diputar!';
-  document.getElementById('slotSub').className='slot-sub';
-  renderList(); renderWinners(); updateStats();
-  showToast('🔄 Pemenang direset!');
-}
-
 function toggleOption(opt){
   const map={remove:'toggleRemove',sound:'toggleSound',big:'toggleBig'};
   const el=document.getElementById(map[opt]);
@@ -156,12 +106,49 @@ function toggleOption(opt){
   if(opt==='big') bigAnim=el.classList.contains('active');
 }
 
-function showWinOverlay(name,rank){
+
+function showWinOverlay(name, rank, category){
+  const winName = document.getElementById('winName');
+  const winCard = document.querySelector('#winOverlay .win-card');
+
+  // Reset class
+  winName.className = 'win-name';
+  winCard.className = 'win-card';
+
+  // Add category-specific class
+  if(category === 'Legendary'){
+    winName.classList.add('win-name-legendary');
+    winCard.classList.add('win-card-legendary');
+  } else if(category === 'Langka'){
+    winName.classList.add('win-name-langka');
+    winCard.classList.add('win-card-langka');
+  } else if(category === 'Common'){
+    winName.classList.add('win-name-common');
+    winCard.classList.add('win-card-common');
+  }
+
   document.getElementById('winName').textContent=name;
-  document.getElementById('winRankText').textContent='Pemenang ke-'+rank+' 🎊';
+  document.getElementById('winRankText').textContent=`Pemenang ke-${rank} 🎊`;
   document.getElementById('winOverlay').classList.add('show');
 }
 function closeWin(){ document.getElementById('winOverlay').classList.remove('show'); }
+
+function showDialog(icon, title, message){
+  document.getElementById('infoIcon').textContent=icon;
+  document.getElementById('infoTitle').textContent=title;
+  document.getElementById('infoMessage').textContent=message;
+  document.getElementById('infoDialog').classList.add('show');
+}
+function closeInfo(){ document.getElementById('infoDialog').classList.remove('show'); }
+
+function showHintDialog(){
+  document.getElementById('hintDialog').classList.add('show');
+}
+function closeHint(){ document.getElementById('hintDialog').classList.remove('show'); }
+
+function updateHintDesc(desc){
+  document.getElementById('hintDesc').textContent = desc;
+}
 
 function spawnConfetti(){
   const c=document.getElementById('confetti');
@@ -185,16 +172,7 @@ function spawnConfetti(){
   }
 }
 
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
 
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') addPeserta(); });
-  initChips(); updateStats();
-  const demos=['Budi Santoso','Siti Rahayu','Andi Wijaya','Dewi Kusuma','Reza Pratama'];
-  demos.forEach(n=>peserta.push(n));
-  renderList(); updateStats();
+  renderList(); renderWinners(); updateStats();
 });

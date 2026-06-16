@@ -10,13 +10,6 @@
 
   <!-- ════ KONTEN UTAMA ════ -->
   <div id="main-content">
-    <div class="demo-header">
-      <span style="font-size:28px;">📊</span>
-      <div>
-        <h1>Dashboard Utama</h1>
-        <p>Selamat datang kembali! Ini konten yang hanya bisa diakses setelah login.</p>
-      </div>
-    </div>
 
     
     <div class="deco-star" style="top:8%;left:5%;font-size:2rem;animation-duration:7s">★</div>
@@ -40,8 +33,32 @@
     </div>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast">—</div>
+    <!-- Info Dialog -->
+    <div class="win-overlay" id="infoDialog">
+    <div class="win-card">
+        <div class="win-card-stripe"></div>
+        <span class="win-trophy" id="infoIcon">ℹ️</span>
+        <div class="win-title" id="infoTitle">Informasi</div>
+        <div class="win-name" id="infoMessage">—</div>
+        <button class="btn-close-win" onclick="closeInfo()">✅ OK</button>
+    </div>
+    </div>
+
+    <!-- Hint Dialog -->
+    <div class="win-overlay" id="hintDialog">
+    <div class="win-card">
+        <div class="win-card-stripe"></div>
+        <span class="win-trophy">💡</span>
+        <div class="win-title">KATEGORI TERSEDIA</div>
+        <div class="hint-content" id="hintContent">
+            <div class="category-item">⭐ <strong>Legendary</strong></div>
+            <div class="category-item">✨ <strong>Langka</strong></div>
+            <div class="category-item">🔷 <strong>Common</strong></div>
+            <div class="hint-desc" id="hintDesc">Pilih kategori dengan hati-hati! 🎯</div>
+        </div>
+        <button class="btn-close-win" onclick="closeHint()">✅ OK</button>
+    </div>
+    </div>
 
     <div class="container" style="position:relative;z-index:1">
 
@@ -49,7 +66,7 @@
     <div class="header">
         <div class="header-badge">🎪 Game Undian Seru!</div>
         <h1>🎰 LUCKY <span>DRAW</span>!</h1>
-        <div class="header-sub">✦ Siapa Beruntung Hari Ini? ✦</div>
+        <div class="header-sub">✦ Apakah Beruntung Hari Ini? ✦</div>
     </div>
 
     <div class="divider"></div>
@@ -57,15 +74,15 @@
     <!-- Stats -->
     <div class="stats-bar">
         <div class="stat-card">
-        <div class="stat-num" id="statPeserta">0</div>
-        <div class="stat-label">Peserta</div>
+        <div class="stat-num" id="statPeserta">3</div>
+        <div class="stat-label">Kategori</div>
         </div>
         <div class="stat-card">
         <div class="stat-num" id="statPemenang">0</div>
         <div class="stat-label">Pemenang</div>
         </div>
         <div class="stat-card">
-        <div class="stat-num" id="statSisa">0</div>
+        <div class="stat-num" id="statSisa">3</div>
         <div class="stat-label">Sisa</div>
         </div>
         <div class="stat-card">
@@ -76,26 +93,12 @@
 
     <!-- Main -->
     <div class="game-area">
-        <!-- Peserta -->
-        <div class="panel panel-left">
-        <div class="panel-title"><span class="icon">👥</span>Daftar Peserta</div>
-        <div class="input-row">
-            <input type="text" id="nameInput" placeholder="Nama peserta..." maxlength="30"/>
-            <button class="btn btn-add" onclick="addPeserta()">+ TAMBAH</button>
-        </div>
-        <div class="quick-add-row" id="quickChips"></div>
-        <div class="peserta-list" id="pesertaList">
-            <div class="empty-state">
-            <span class="big">🎪</span>
-            Belum ada peserta!<br>Yuk tambahkan nama dulu~
-            </div>
-        </div>
-        <button class="btn btn-clear" onclick="clearAll()">🗑️ Hapus semua peserta</button>
-        </div>
-
         <!-- Spin -->
-        <div class="panel panel-right">
-        <div class="panel-title"><span class="icon">🎯</span>Putar Undian</div>
+        <div class="panel">
+        <div class="panel-title-wrap">
+            <div class="panel-title"><span class="icon">🎯</span>Putar Undian</div>
+            <button class="btn-hint-small" onclick="showHintDialog()">💡</button>
+        </div>
 
         <div class="slot-display">
             <span class="slot-corner tl">★</span>
@@ -106,22 +109,14 @@
             <div class="slot-sub" id="slotSub">Siap diputar!</div>
         </div>
 
-        <div class="options-row">
-            <button class="toggle-btn active" id="toggleRemove" onclick="toggleOption('remove')">🚫 Hapus pemenang</button>
-            <button class="toggle-btn" id="toggleSound" onclick="toggleOption('sound')">🔊 Suara</button>
-            <button class="toggle-btn" id="toggleBig" onclick="toggleOption('big')">🎉 Pop-up besar</button>
-        </div>
-
         <button class="btn btn-spin" id="spinBtn" onclick="spinDraw()">
             🎰 PUTAR UNDIAN!
         </button>
-        <button class="btn btn-clear" style="margin-top:8px" onclick="resetWinners()">🔄 Reset pemenang</button>
         </div>
     </div>
 
-    <!-- Winners -->
+    <!-- Daftar Pemenang -->
     <div class="winners-panel">
-        <div class="panel-title"><span class="icon">🏆</span>Daftar Pemenang</div>
         <div class="winners-grid" id="winnersGrid">
         <div class="winners-empty">Belum ada pemenang — yuk putar undian!</div>
         </div>
