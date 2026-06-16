@@ -177,8 +177,7 @@ async function handleGet(req, res) {
     const records = await redis.mget(...allKeys);
 
     // 3. Parse tiap record
-    const tokens = records
-      .map((raw, i) => {
+    const tokens = records.map((raw, i) => {
         if (raw === null || raw === undefined) return null;
 
         try {
@@ -187,9 +186,11 @@ async function handleGet(req, res) {
           // Ekstrak username dari key kalau field tidak ada
           const usernameFromKey = allKeys[i].replace(/^token:/, '');
 
+          const tokenValue = allKeys[i].replace(/^token:/, '');
+
           return {
             username:  data.username  ?? usernameFromKey,
-            token:     data.token     ?? null,
+            token:     data.token     ?? tokenValue,
             role:      data.role      ?? 'user',
             note:      data.note      ?? '',
             createdAt: normalizeDate(data.createdAt),
