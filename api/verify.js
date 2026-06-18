@@ -28,7 +28,8 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      username: data.username
+      username: data.username,
+      role: data.role
     });
   } catch (err) {
     // 3. Handle Redis error
