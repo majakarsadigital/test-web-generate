@@ -142,20 +142,23 @@ async function loadTokens() {
 // ──────────────────────────────────────────────
 //  REVOKE / DELETE TOKEN  (DELETE /api/tokens/:username)
 // ──────────────────────────────────────────────
-async function revokeToken(username) {
-  if (!confirm(`Hapus token untuk "${username}"?`)) return;
+async function revokeToken(token) {
+  if (!confirm(`Hapus token "${token}"?`)) return;
 
   try {
-    const response = await fetch(`/api/tokens?u=${encodeURIComponent(username)}`, {
-      method: 'DELETE',
-    });
+    const response = await fetch(
+      `/api/tokens?token=${encodeURIComponent(token)}`,
+      {
+        method: 'DELETE',
+      }
+    );
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
       throw new Error(err.message || `HTTP ${response.status}`);
     }
 
-    showToast(`🗑 Token "${username}" dihapus`);
+    showToast(`🗑 Token berhasil dihapus`);
     await loadTokens();
 
   } catch (err) {

@@ -222,30 +222,29 @@ async function handleGet(req, res) {
 //  Del key token:<username>, dan srem dari index jika ada
 // ──────────────────────────────────────────────────────────────
 async function handleDelete(req, res) {
-  const username =
-    req.query?.u ||
-    req.query?.username ||
-    req.body?.username;
+  const token =
+  req.query?.token ||
+  req.body?.token;
 
-  if (!username) {
-    return res.status(400).json({ message: 'Username diperlukan' });
+  if (!token) {
+    return res.status(400).json({ message: 'Token diperlukan' });
   }
 
   try {
-    const key    = `token:${username}`;
+    const key    = `token:${token}`;
     const exists = await redis.exists(key);
 
     if (!exists) {
-      return res.status(404).json({ message: `Token untuk "${username}" tidak ditemukan` });
+      return res.status(404).json({ message: `Token untuk "${token}" tidak ditemukan` });
     }
 
     // Hapus key + srem dari index kalau ada (tidak error kalau tidak ada)
     const pipe = redis.pipeline();
     pipe.del(key);
-    pipe.srem('token_index', username); // aman meski SET tidak ada
+    pipe.srem('token_index', token); // aman meski SET tidak ada
     await pipe.exec();
 
-    return res.status(200).json({ message: `Token "${username}" berhasil dihapus` });
+    return res.status(200).json({ message: `Token "${token}" berhasil dihapus` });
 
   } catch (err) {
     console.error('[DELETE /api/tokens]', err);
