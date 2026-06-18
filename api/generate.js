@@ -21,6 +21,7 @@ export default async function handler(req, res) {
   let { username } = req.body;
   let { role } = req.body;
   let { gender } = req.body;
+  let { note } = req.body;
 
   if (!username) {
     return res.status(400).json({
@@ -53,6 +54,7 @@ export default async function handler(req, res) {
     username,
     role: role,
     gender: gender,
+    note: note,
     createdAt: Date.now(),
   });
 
@@ -61,6 +63,7 @@ export default async function handler(req, res) {
     username,
     role,
     gender,
-    token
+    token,
+    note
   });
 }

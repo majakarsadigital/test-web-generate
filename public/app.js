@@ -312,7 +312,7 @@ function resetError() {
   input.style.boxShadow   = '3px 3px 0 #1a1a1a';
 }
 
-async function verifyToken() {
+async function verifyToken(type) {
   const tokenVal = input.value.trim();
 
   if (!tokenVal) {
@@ -340,7 +340,11 @@ async function verifyToken() {
         }
       );
     const data = await response.json();
-    if (response.ok && data.success) {
+    if (type === 'dashboard'){
+      if(data.role !== 'admin'){
+        throw new Error('Hanya admin yang bisa mengakses dashboard');
+      }
+    } else if (response.ok && data.success) {
       btn.textContent      = '✅ Berhasil! Membuka...';
       btn.style.background = '#0F6E56';
       btn.style.color      = '#E1F5EE';

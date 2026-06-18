@@ -602,7 +602,7 @@
         spellcheck="false"
       />
       <div id="error-msg"></div>
-      <button id="login-btn">🚀 Login</button>
+      <button id="login-btn"  onclick="verifyToken('dashboard')">🚀 Login</button>
     </div>
   </div>
 </div>
@@ -634,8 +634,6 @@
               <select id="role">
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
-                <option value="editor">Editor</option>
-                <option value="viewer">Viewer</option>
               </select>
             </div>
             <div class="form-group">
