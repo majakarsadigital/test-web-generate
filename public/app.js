@@ -341,6 +341,7 @@ async function verifyToken(type) {
       );
     const data = await response.json();
     console.log('Ini data : ' + type);
+    console.log('Ini data 2: ' + JSON.stringify(data));
     if (type === 'dashboard' && data.role !== 'admin') {
       throw new Error('Hanya admin yang bisa mengakses dashboard');
     }
