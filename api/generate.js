@@ -20,6 +20,7 @@ export default async function handler(req, res) {
 
   let { username } = req.body;
   let { role } = req.body;
+  let { gender } = req.body;
 
   if (!username) {
     return res.status(400).json({
@@ -51,12 +52,15 @@ export default async function handler(req, res) {
   await redis.set(`token:${token}`, {
     username,
     role: role,
+    gender: gender,
     createdAt: Date.now(),
   });
 
   return res.status(200).json({
     success: true,
     username,
+    role,
+    gender,
     token
   });
 }

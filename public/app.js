@@ -49,7 +49,7 @@ let _allTokens = [];
 async function generateToken() {
   const username = document.getElementById('username').value.trim();
   const role     = document.getElementById('role').value;
-  const expires  = parseInt(document.getElementById('expires').value, 10) || 30;
+  const gender  = document.getElementById('gender').value;
   const note     = document.getElementById('note').value.trim();
 
   if (!username) {
@@ -66,7 +66,7 @@ async function generateToken() {
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, role, expires, note }),
+      body: JSON.stringify({ username, role, gender, note }),
     });
 
     if (!response.ok) {
@@ -78,7 +78,7 @@ async function generateToken() {
 
     // Show result block
     document.getElementById('token-text').textContent    = data.token;
-    document.getElementById('token-expires').textContent = formatDate(data.expiresAt);
+    document.getElementById('token-gender').textContent = data.gender || gender;
     document.getElementById('token-role').textContent    = data.role || role;
     document.getElementById('result-block').classList.add('show');
 
@@ -194,7 +194,7 @@ function renderTable(tokens) {
       <td><span class="badge ${roleCls}">${escHtml(t.role || 'user')}</span></td>
       <td>
         <button class="btn btn-danger" onclick="revokeToken('${escAttr(t.token)}')">
-          Revoke
+          Hapus
         </button>
       </td>
     </tr>`;
