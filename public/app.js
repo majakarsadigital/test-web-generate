@@ -340,6 +340,7 @@ async function verifyToken(type) {
         }
       );
     const data = await response.json();
+    console.log('Ini data : ' + type);
     if (type === 'dashboard' && data.role !== 'admin') {
       throw new Error('Hanya admin yang bisa mengakses dashboard');
     }
@@ -363,8 +364,4 @@ async function verifyToken(type) {
 
 input.addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyToken();
-});
-
-btn.addEventListener('click', () => {
-  verifyToken()
 });
