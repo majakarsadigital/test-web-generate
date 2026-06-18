@@ -146,7 +146,7 @@ async function revokeToken(username) {
   if (!confirm(`Hapus token untuk "${username}"?`)) return;
 
   try {
-    const response = await fetch(`/api/tokens/${encodeURIComponent(username)}`, {
+    const response = await fetch(`/api/tokens?u=${encodeURIComponent(username)}`, {
       method: 'DELETE',
     });
 
