@@ -184,7 +184,6 @@ function renderTable(tokens) {
     const active  = isActive(t.expiresAt);
     const status  = active ? 'active' : 'expired';
     const roleCls = t.role === 'admin' ? 'badge-admin' : 'badge-user';
-    const tokenValue = allKeys[i].replace(/^token:/, '');
 
     return `<tr>
       <td class="td-mono">${escHtml(t.username)}</td>
