@@ -190,7 +190,7 @@ function renderTable(tokens) {
       <td class="td-token" title="${escHtml(t.token)}">${escHtml(truncate(t.token, 24))}</td>
       <td><span class="badge ${roleCls}">${escHtml(t.role || 'user')}</span></td>
       <td>
-        <button class="btn btn-danger" onclick="revokeToken('${escAttr(t.username)}')">
+        <button class="btn btn-danger" onclick="revokeToken('${escAttr(t.token)}')">
           Revoke
         </button>
       </td>
