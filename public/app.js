@@ -340,12 +340,10 @@ async function verifyToken(type) {
         }
       );
     const data = await response.json();
-    if (type === 'dashboard'){
-      if(data.role !== 'admin'){
-        throw new Error('Hanya admin yang bisa mengakses dashboard');
-        return;
-      }
-    } else if (response.ok && data.success) {
+    if (type === 'dashboard' && data.role !== 'admin') {
+      throw new Error('Hanya admin yang bisa mengakses dashboard');
+    }
+    if (response.ok && data.success) {
       btn.textContent      = '✅ Berhasil! Membuka...';
       btn.style.background = '#0F6E56';
       btn.style.color      = '#E1F5EE';
