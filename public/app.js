@@ -382,15 +382,12 @@ async function verifyToken(type) {
 }
 
 async function checkSavedLogin() {
-
   const token = localStorage.getItem('game_token');
-
   if (!token) {
     return false;
   }
 
   try {
-
     const response = await fetch(
       '/api/verify',
       {
@@ -404,54 +401,36 @@ async function checkSavedLogin() {
         })
       }
     );
-
     const data = await response.json();
-
-    if (
-      response.ok &&
-      data.success
-    ) {
-
+    if (response.ok &&data.success) {
       window.currentUser = data;
-
       console.log(
         'Auto login berhasil'
       );
-
       return true;
     }
-
     localStorage.removeItem(
       'game_token'
     );
-
     localStorage.removeItem(
       'player_data'
     );
-
     return false;
-
   } catch (err) {
-
-    console.error(
-      'Auto login gagal',
-      err
-    );
-
     return false;
   }
 }
 
-document.addEventListener('DOMContentLoaded',
-  async () => {
-    const loggedIn = await checkSavedLogin();
-    if (loggedIn) {
-      closeDialog();
-    } else {
-      showDialogLogin();
-    }
+document.addEventListener('DOMContentLoaded', async () => {
+  const loading =document.getElementById('loadingScreen');
+  const loggedIn = await checkSavedLogin();
+  loading.style.display = 'none';
+  if (loggedIn) {
+    content.classList.add('unlocked');
+  } else {
+    showDialogLogin();
   }
-);
+});
 
 input.addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyToken();
