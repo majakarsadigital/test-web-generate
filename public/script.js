@@ -4,6 +4,9 @@ let winners = [];
 const playerData = JSON.parse(
   localStorage.getItem('player_data')
 );
+console.log(playerData.legendary);
+console.log(playerData.langka);
+console.log(playerData.common);
 winnersHistory = [{
   name: playerData.username,
   legendary: playerData.legendary,
@@ -211,5 +214,8 @@ function spawnConfetti(){
 
 
 document.addEventListener('DOMContentLoaded',()=>{
+  console.log(
+    JSON.parse(localStorage.getItem('player_data'))
+  );
   renderList(); renderWinners(); renderWinnersHistory(); updateStats();
 });
