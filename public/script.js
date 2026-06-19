@@ -110,33 +110,67 @@ function renderWinners(){
 }
 
 function renderWinnersHistory() {
-  const grid = document.getElementById('winnersHistoryGrid');
 
-  console.log('winnersHistory:', winnersHistory);
+  const grid =
+    document.getElementById(
+      'winnersHistoryGrid'
+    );
 
-  if (!winnersHistory.length) {
+  const player =
+    JSON.parse(
+      localStorage.getItem(
+        'player_data'
+      )
+    );
+
+  if (!player) {
+
     grid.innerHTML =
-      '<div class="winners-empty">Riwayat pemenang akan muncul di sini!</div>';
+      '<div class="winners-empty">Belum ada data pemain</div>';
+
     return;
   }
 
-  const medals = ['🥇', '🥈', '🥉'];
+  const categories = [
+    {
+      medal: '🥇',
+      name: 'Legendary',
+      total: player.legendary
+    },
+    {
+      medal: '🥈',
+      name: 'Langka',
+      total: player.langka
+    },
+    {
+      medal: '🥉',
+      name: 'Common',
+      total: player.common
+    }
+  ];
 
-  grid.innerHTML = winnersHistory.map((w, i) => `
-    <div class="winner-badge">
-      <span class="rank">${medals[i] || '#' + (i + 1)}</span>
+  grid.innerHTML =
+    categories.map(c => `
+      <div class="winner-badge">
 
-      <div>
-        <div class="name">${escapeHtml(w.name)}</div>
+        <span class="rank">
+          ${c.medal}
+        </span>
 
-        <div class="stats">
-          ⭐ ${w.legendary}
-          &nbsp; 💎 ${w.langka}
-          &nbsp; ⚪ ${w.common}
+        <div>
+
+          <div class="name">
+            ${c.name}
+          </div>
+
+          <div class="stats">
+            Total: ${c.total}
+          </div>
+
         </div>
+
       </div>
-    </div>
-  `).join('');
+    `).join('');
 }
 
 function toggleOption(opt){
