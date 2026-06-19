@@ -299,6 +299,17 @@ function closeDialog() {
   }, { once: true });
 }
 
+function showDialogLogin() {
+  overlay.classList.remove('hidden');
+  dialog.classList.remove('closing');
+  content.classList.remove('unlocked');
+  input.value = '';
+  resetError();
+  btn.textContent = '🚀 Login';
+  btn.disabled = false;
+  input.focus();
+}
+
 function setError(msg) {
   errMsg.textContent      = '⚠️ ' + msg;
   errMsg.style.display    = 'block';
@@ -346,6 +357,13 @@ async function verifyToken(type) {
       throw new Error('Hanya admin yang bisa mengakses dashboard');
     }
     if (response.ok && data.success) {
+      localStorage.setItem('game_token', tokenVal);
+
+      localStorage.setItem(
+        'player_data',
+        JSON.stringify(data)
+      );
+      
       btn.textContent      = '✅ Berhasil! Membuka...';
       btn.style.background = '#0F6E56';
       btn.style.color      = '#E1F5EE';
@@ -362,6 +380,78 @@ async function verifyToken(type) {
     btn.disabled           = false;
   }
 }
+
+async function checkSavedLogin() {
+
+  const token = localStorage.getItem('game_token');
+
+  if (!token) {
+    return false;
+  }
+
+  try {
+
+    const response = await fetch(
+      '/api/verify',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+        body: JSON.stringify({
+          token
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    if (
+      response.ok &&
+      data.success
+    ) {
+
+      window.currentUser = data;
+
+      console.log(
+        'Auto login berhasil'
+      );
+
+      return true;
+    }
+
+    localStorage.removeItem(
+      'game_token'
+    );
+
+    localStorage.removeItem(
+      'player_data'
+    );
+
+    return false;
+
+  } catch (err) {
+
+    console.error(
+      'Auto login gagal',
+      err
+    );
+
+    return false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded',
+  async () => {
+    const loggedIn = await checkSavedLogin();
+    if (loggedIn) {
+      closeDialog();
+    } else {
+      showDialogLogin();
+    }
+  }
+);
 
 input.addEventListener('keydown', e => {
     if (e.key === 'Enter') verifyToken();

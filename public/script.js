@@ -1,6 +1,7 @@
 const categories = ['Legendary', 'Langka', 'Common'];
 const maxSpins = 3;
 let winners = [];
+let winnersHistory = [];
 let isRolling = false;
 let removeWinner = true;
 let soundOn = false;
@@ -91,6 +92,20 @@ function renderWinners(){
   }
   const medals=['🥇','🥈','🥉'];
   grid.innerHTML=winners.map((w,i)=>`
+    <div class="winner-badge">
+      <span class="rank">${medals[i]||'#'+(i+1)}</span>
+      <span class="name">${escapeHtml(w.name)}</span>
+    </div>`).join('');
+}
+
+function renderWinnersHistory(){
+  const grid=document.getElementById('winnersHistoryGrid');
+  if(!winnersHistory.length){
+    grid.innerHTML='<div class="winners-empty">Riwayat pemenang akan muncul di sini!</div>';
+    return;
+  }
+  const medals=['🥇','🥈','🥉'];
+  grid.innerHTML=winnersHistory.map((w,i)=>`
     <div class="winner-badge">
       <span class="rank">${medals[i]||'#'+(i+1)}</span>
       <span class="name">${escapeHtml(w.name)}</span>
