@@ -427,6 +427,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loading.style.display = 'none';
   if (loggedIn) {
     content.classList.add('unlocked');
+    closeDialog();
   } else {
     showDialogLogin();
   }
