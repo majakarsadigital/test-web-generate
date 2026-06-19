@@ -422,6 +422,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (loggedIn) {
     content.classList.add('unlocked');
     closeDialog();
+    renderWinnersHistory();
   } else {
     showDialogLogin();
   }

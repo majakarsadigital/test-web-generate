@@ -214,7 +214,6 @@ function spawnConfetti(){
   }
 }
 
-
 document.addEventListener('DOMContentLoaded',()=>{
-  renderList(); renderWinners(); renderWinnersHistory(); updateStats();
+  renderList(); renderWinners(); updateStats();
 });
