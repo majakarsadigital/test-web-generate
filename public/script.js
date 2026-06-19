@@ -112,6 +112,8 @@ function renderWinners(){
 function renderWinnersHistory() {
   const grid = document.getElementById('winnersHistoryGrid');
 
+  console.log('winnersHistory:', winnersHistory);
+
   if (!winnersHistory.length) {
     grid.innerHTML =
       '<div class="winners-empty">Riwayat pemenang akan muncul di sini!</div>';
@@ -214,8 +216,5 @@ function spawnConfetti(){
 
 
 document.addEventListener('DOMContentLoaded',()=>{
-  console.log(
-    JSON.parse(localStorage.getItem('player_data'))
-  );
   renderList(); renderWinners(); renderWinnersHistory(); updateStats();
 });
