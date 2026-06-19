@@ -120,7 +120,6 @@ async function loadTokens() {
     }
 
     const data = await response.json();
-    console.log('Ini data : ' + JSON.stringify(data));
     // Support both { tokens: [...] } and plain array
     _allTokens = Array.isArray(data) ? data : (data.tokens || []);
 
@@ -351,8 +350,6 @@ async function verifyToken(type) {
         }
       );
     const data = await response.json();
-    console.log('Ini data : ' + type);
-    console.log('Ini data 2: ' + JSON.stringify(data));
     if (type === 'dashboard' && data.role !== 'admin') {
       throw new Error('Hanya admin yang bisa mengakses dashboard');
     }
@@ -404,9 +401,6 @@ async function checkSavedLogin() {
     const data = await response.json();
     if (response.ok &&data.success) {
       window.currentUser = data;
-      console.log(
-        'Auto login berhasil'
-      );
       return true;
     }
     localStorage.removeItem(

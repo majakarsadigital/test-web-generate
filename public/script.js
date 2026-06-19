@@ -1,7 +1,15 @@
 const categories = ['Legendary', 'Langka', 'Common'];
 const maxSpins = 3;
 let winners = [];
-let winnersHistory = [];
+const playerData = JSON.parse(
+  localStorage.getItem('player_data')
+);
+winnersHistory = [{
+  name: playerData.username,
+  legendary: playerData.legendary,
+  langka: playerData.langka,
+  common: playerData.common
+}];
 let isRolling = false;
 let removeWinner = true;
 let soundOn = false;
@@ -98,18 +106,32 @@ function renderWinners(){
     </div>`).join('');
 }
 
-function renderWinnersHistory(){
-  const grid=document.getElementById('winnersHistoryGrid');
-  if(!winnersHistory.length){
-    grid.innerHTML='<div class="winners-empty">Riwayat pemenang akan muncul di sini!</div>';
+function renderWinnersHistory() {
+  const grid = document.getElementById('winnersHistoryGrid');
+
+  if (!winnersHistory.length) {
+    grid.innerHTML =
+      '<div class="winners-empty">Riwayat pemenang akan muncul di sini!</div>';
     return;
   }
-  const medals=['🥇','🥈','🥉'];
-  grid.innerHTML=winnersHistory.map((w,i)=>`
+
+  const medals = ['🥇', '🥈', '🥉'];
+
+  grid.innerHTML = winnersHistory.map((w, i) => `
     <div class="winner-badge">
-      <span class="rank">${medals[i]||'#'+(i+1)}</span>
-      <span class="name">${escapeHtml(w.name)}</span>
-    </div>`).join('');
+      <span class="rank">${medals[i] || '#' + (i + 1)}</span>
+
+      <div>
+        <div class="name">${escapeHtml(w.name)}</div>
+
+        <div class="stats">
+          ⭐ ${w.legendary}
+          &nbsp; 💎 ${w.langka}
+          &nbsp; ⚪ ${w.common}
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
 function toggleOption(opt){
@@ -189,5 +211,5 @@ function spawnConfetti(){
 
 
 document.addEventListener('DOMContentLoaded',()=>{
-  renderList(); renderWinners(); updateStats();
+  renderList(); renderWinners(); renderWinnersHistory(); updateStats();
 });
