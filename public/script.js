@@ -94,7 +94,7 @@ async function spinDraw() {
   spin--;
 
   // update UI kalau ada
-  document.getElementById('spinCount').textContent = spin;
+  document.getElementById('statSisa').textContent = spin;
 
   slotName.className = 'slot-name';
   slotName.textContent = winner;
