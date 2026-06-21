@@ -4,15 +4,13 @@ let winners = [];
 const playerData = JSON.parse(
   localStorage.getItem('player_data')
 );
-console.log(playerData.legendary);
-console.log(playerData.langka);
-console.log(playerData.common);
 winnersHistory = [{
   name: playerData.username,
   legendary: playerData.legendary,
   langka: playerData.langka,
   common: playerData.common
 }];
+spin = playerData.spin || 0;
 let isRolling = false;
 let removeWinner = true;
 let soundOn = false;
@@ -44,47 +42,80 @@ function sleep(ms){
   return new Promise(r=>setTimeout(r,ms));
 }
 
-async function spinDraw(){
-  if(isRolling) return;
-  if(winners.length >= maxSpins){
-    showDialog('⚠️', 'Kesempatan Habis!', 'Anda sudah spin 3 kali. Gunakan tombol "Hapus Semua" untuk reset.');
+async function spinDraw() {
+
+  if (isRolling) return;
+
+  // ❌ GANTI LIMIT DARI WINNERS → SPIN
+  if (spin <= 0) {
+    showDialog(
+      '⚠️',
+      'Kesempatan Habis!',
+      'Spin kamu sudah habis.'
+    );
     return;
   }
+
   const eligible = getEligible();
 
-  isRolling=true;
-  const btn=document.getElementById('spinBtn');
-  btn.disabled=true; btn.textContent='🎲 Mengundi...';
+  isRolling = true;
 
-  const slotName=document.getElementById('slotName');
-  const slotSub=document.getElementById('slotSub');
-  slotName.className='slot-name rolling';
-  slotSub.textContent='🎲 Sedang mengacak...';
-  slotSub.className='slot-sub';
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = '🎲 Mengundi...';
 
-  const frames = 40 + Math.floor(Math.random()*20);
-  for(let i=0;i<frames;i++){
-    slotName.textContent = eligible[Math.floor(Math.random()*eligible.length)];
-    await sleep(45 + i*2.2);
+  const slotName = document.getElementById('slotName');
+  const slotSub = document.getElementById('slotSub');
+
+  slotName.className = 'slot-name rolling';
+  slotSub.textContent = '🎲 Sedang mengacak...';
+  slotSub.className = 'slot-sub';
+
+  const frames = 40 + Math.floor(Math.random() * 20);
+
+  for (let i = 0; i < frames; i++) {
+    slotName.textContent =
+      eligible[Math.floor(Math.random() * eligible.length)];
+
+    await sleep(45 + i * 2.2);
   }
 
-  const winner = eligible[Math.floor(Math.random()*eligible.length)];
-  winners.push({name:winner, rank:winners.length+1});
+  const winner =
+    eligible[Math.floor(Math.random() * eligible.length)];
+
+  winners.push({
+    name: winner,
+    rank: winners.length + 1
+  });
+
   round++;
 
-  slotName.className='slot-name';
-  slotName.textContent=winner;
-  slotSub.textContent=`🎉 Pemenang ke-${winners.length}!`;
-  slotSub.className='slot-sub winner-text';
+  // 🔥 IMPORTANT: kurangi spin
+  spin--;
 
-  renderWinners(); updateStats();
+  // update UI kalau ada
+  document.getElementById('spinCount').textContent = spin;
+
+  slotName.className = 'slot-name';
+  slotName.textContent = winner;
+
+  slotSub.textContent =
+    `🎉 Pemenang ke-${winners.length}!`;
+
+  slotSub.className = 'slot-sub winner-text';
+
+  renderWinners();
+  updateStats();
+
   spawnConfetti();
+
   await sleep(350);
 
   showWinOverlay(winner, winners.length, winner);
 
-  btn.disabled=false; btn.textContent='🎰 PUTAR UNDIAN!';
-  isRolling=false;
+  btn.disabled = false;
+  btn.textContent = '🎰 PUTAR UNDIAN!';
+  isRolling = false;
 }
 
 function updateStats(){

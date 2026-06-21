@@ -22,6 +22,10 @@ export default async function handler(req, res) {
   let { role } = req.body;
   let { gender } = req.body;
   let { note } = req.body;
+  let { price } = req.body;
+
+
+  price = Number(price.replace(/[^\d]/g, ''));
 
   if (!username) {
     return res.status(400).json({
@@ -44,6 +48,12 @@ export default async function handler(req, res) {
     username = `${username} (${count})`;
   }
 
+  if(price >= 70000){
+    var spin = 3;
+  } else if(price >= 50000){
+    var spin = 1;
+  }
+
   let token = generateToken();
 
   while (await redis.get(`token:${token}`)) {
@@ -55,6 +65,7 @@ export default async function handler(req, res) {
     role: role,
     gender: gender,
     note: note,
+    spin: spin,
     createdAt: Date.now(),
   });
 
@@ -64,6 +75,7 @@ export default async function handler(req, res) {
     role,
     gender,
     token,
-    note
+    note,
+    spin,
   });
 }

@@ -670,6 +670,11 @@
           </div>
 
           <div class="form-group">
+            <label for="price">Pemasukan</label>
+            <input type="text" id="price" placeholder="Rp. 50.000" />
+          </div>
+
+          <div class="form-group">
             <label for="note">Note (optional)</label>
             <input type="text" id="note" placeholder="e.g. Production access" />
           </div>
@@ -700,14 +705,6 @@
         <div class="stat-card accent-yellow">
           <div class="stat-value" id="stat-total">—</div>
           <div class="stat-label">Total Tokens</div>
-        </div>
-        <div class="stat-card accent-green">
-          <div class="stat-value" id="stat-active">—</div>
-          <div class="stat-label">Active</div>
-        </div>
-        <div class="stat-card accent-pink">
-          <div class="stat-value" id="stat-expired">—</div>
-          <div class="stat-label">Expired</div>
         </div>
       </div>
 
@@ -783,6 +780,17 @@
     document.getElementById('main-content'),
     { attributes: true, attributeFilter: ['class'] }
   );
+  const priceInput = document.getElementById('price');
+  priceInput.addEventListener('input', function (e) {
+      let value = e.target.value.replace(/\D/g, '');
+
+      if (!value) {
+          e.target.value = '';
+          return;
+      }
+
+      e.target.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
+  });
 </script>
 
 </body>

@@ -227,11 +227,8 @@ function filterTable() {
 // ──────────────────────────────────────────────
 function updateStats(tokens) {
   const active  = tokens.filter(t => isActive(t.expiresAt)).length;
-  const expired = tokens.length - active;
 
   document.getElementById('stat-total').textContent   = tokens.length;
-  document.getElementById('stat-active').textContent  = active;
-  document.getElementById('stat-expired').textContent = expired;
 }
 
 // ──────────────────────────────────────────────

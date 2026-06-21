@@ -32,7 +32,8 @@ export default async function handler(req, res) {
       role: data.role,
       legendary: data.legendary,
       langka: data.langka,
-      common: data.common
+      common: data.common,
+      spin: data.spin,
     });
   } catch (err) {
     // 3. Handle Redis error
