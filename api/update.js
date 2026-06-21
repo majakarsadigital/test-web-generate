@@ -32,6 +32,8 @@ export default async function handler(req, res) {
 
     const user = JSON.parse(userRaw);
 
+    console.log(`[UPDATE SPIN] User: ${user.username}, Current Spin: ${user.spin}, Change: ${spinChange}`);
+
     // default spin
     let spin = user.spin || 0;
 
