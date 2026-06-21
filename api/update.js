@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
@@ -98,7 +98,17 @@ export default async function handler(req, res) {
       });
     }
 
-    const user = JSON.parse(userRaw);
+    // const user = JSON.parse(userRaw);
+    let user;
+
+    try {
+        user = typeof userRaw === 'string'
+            ? JSON.parse(userRaw)
+            : userRaw;
+    } catch (err) {
+        console.error('[PARSE ERROR]', userRaw);
+        throw new Error('Data user corrupt di Redis');
+    }
 
     console.log('[UPDATE SPIN] PARSED USER:', user);
 
