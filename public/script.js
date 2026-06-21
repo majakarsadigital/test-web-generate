@@ -46,7 +46,6 @@ async function spinDraw() {
 
   if (isRolling) return;
 
-  // ❌ GANTI LIMIT DARI WINNERS → SPIN
   if (spin <= 0) {
     showDialog(
       '⚠️',
@@ -85,12 +84,12 @@ async function spinDraw() {
 
   winners.push({
     name: winner,
-    rank: winners.length + 1
+    rank: winners.length + 1,
+    category: winner
   });
 
   round++;
 
-  // 🔥 IMPORTANT: kurangi spin
   spin--;
 
   // update UI kalau ada
@@ -103,16 +102,22 @@ async function spinDraw() {
 
   slotSub.className = 'slot-sub winner-text';
 
-  await fetch('/api/update', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      token: localStorage.getItem('game_token'),
-      spinChange: -1
-    })
-  });
+  if (winners.length === 3) {
+
+    await fetch('/api/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: localStorage.getItem('game_token'),
+        spinChange: -1,
+        matchResult: winners
+      })
+    });
+
+    winners = [];
+  }
 
   renderWinners();
   updateStats();
