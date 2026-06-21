@@ -99,10 +99,20 @@ async function spinDraw() {
   slotName.className = 'slot-name';
   slotName.textContent = winner;
 
-  slotSub.textContent =
-    `🎉 Pemenang ke-${winners.length}!`;
+  slotSub.textContent = `🎉 Pemenang ke-${winners.length}!`;
 
   slotSub.className = 'slot-sub winner-text';
+
+  await fetch('/api/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      token: localStorage.getItem('game_token'),
+      spinChange: -1
+    })
+  });
 
   renderWinners();
   updateStats();
