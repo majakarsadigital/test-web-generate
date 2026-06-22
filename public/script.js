@@ -264,9 +264,14 @@ function showDialog(icon, title, message){
 function closeInfo(){ document.getElementById('infoDialog').classList.remove('show'); }
 
 function showHintDialog(){
-  document.getElementById('hintDialog').classList.add('show');
+  const el = document.getElementById('hintDialog');
+  el.style.display = 'flex';
 }
-function closeHint(){ document.getElementById('hintDialog').classList.remove('show'); }
+
+function closeHint(){
+  const el = document.getElementById('hintDialog');
+  el.style.display = 'none';
+}
 
 function updateHintDesc(desc){
   document.getElementById('hintDesc').textContent = desc;

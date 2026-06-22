@@ -45,19 +45,101 @@
     </div>
 
     <!-- Hint Dialog -->
-    <div class="win-overlay" id="hintDialog">
-    <div class="win-card">
-        <div class="win-card-stripe"></div>
-        <span class="win-trophy">💡</span>
-        <div class="win-title">KATEGORI TERSEDIA</div>
-        <div class="hint-content" id="hintContent">
-            <div class="category-item">⭐ <strong>Legendary</strong></div>
-            <div class="category-item">✨ <strong>Langka</strong></div>
-            <div class="category-item">🔷 <strong>Common</strong></div>
-            <div class="hint-desc" id="hintDesc">Pilih kategori dengan hati-hati! 🎯</div>
+    <div id="hintDialog"
+        class="win-overlay"
+        style="
+            position: fixed;
+            inset: 0;
+            background: rgba(17,17,17,0.75);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        ">
+
+        <div class="win-card"
+            style="
+                background: #FAC775;
+                border-radius: 14px;
+                padding: 18px 20px;
+                max-width: 92vw;
+                width: fit-content;
+                min-width: 280px;
+                max-height: 85vh;
+                overflow: auto;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            ">
+
+            <div class="win-card-stripe"></div>
+
+            <span class="win-trophy">💡</span>
+
+            <div class="win-title">HINT !</div>
+
+            <div id="hintContent" class="hint-content">
+
+                <div class="category-item"
+                    style="
+                        color: #d4af37;
+                        font-weight: 700;
+                        position: relative;
+                        overflow: hidden;
+                        animation: legendaryPulse 2.5s ease-in-out infinite;
+                    ">
+                    ⭐ <strong>Legendary</strong> : Kartu emas 1×
+                </div>
+
+                <div class="category-item"
+                    style="
+                        color: #7a3cff;
+                        font-weight: 600;
+                        animation: langkaGlow 2s ease-in-out infinite;
+                    ">
+                    ✨ <strong>Langka</strong> : Stiker foto sendiri 2× (1 asli, 1 anime)
+                </div>
+
+                <div class="category-item"
+                    style="
+                        color: #3b82f6;
+                        font-weight: 500;
+                    ">
+                    🔷 <strong>Common</strong> : Stiker couple 2×
+                </div>
+
+                <style>
+                @keyframes langkaGlow {
+                    0%, 100% {
+                        text-shadow: 0 0 5px rgba(122, 60, 255, 0.4);
+                    }
+                    50% {
+                        text-shadow: 0 0 12px rgba(122, 60, 255, 0.9);
+                    }
+                }
+
+                @keyframes legendaryPulse {
+                    0%, 100% {
+                        text-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+                        transform: scale(1);
+                    }
+                    50% {
+                        text-shadow: 0 0 15px rgba(212, 175, 55, 1);
+                        transform: scale(1.03);
+                    }
+                }
+                </style>
+
+                <div id="hintDesc" class="hint-desc" style="margin-top:12px;">
+                    !!<b>Note</b>!! <br> Koleksi 3× kartu Legendary untuk mendapatkan prize pool sebesar 300k 🎯
+                </div>
+
+            </div>
+
+            <button class="btn-close-win" onclick="closeHint()">
+                ✅ OK
+            </button>
+
         </div>
-        <button class="btn-close-win" onclick="closeHint()">✅ OK</button>
-    </div>
     </div>
 
     <div class="container" style="position:relative;z-index:1">

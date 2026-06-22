@@ -36,7 +36,6 @@ export default async function handler(req, res) {
             ? JSON.parse(userRaw)
             : userRaw;
     } catch (err) {
-        console.error('[PARSE ERROR]', userRaw);
         throw new Error('Data user corrupt di Redis');
     }
 
@@ -71,8 +70,6 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-
-    console.error('[UPDATE SPIN ERROR]', err);
 
     return res.status(500).json({
       success: false,
