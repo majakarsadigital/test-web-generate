@@ -791,6 +791,14 @@
 
       e.target.value = 'Rp. ' + Number(value).toLocaleString('id-ID');
   });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      verifyToken('dashboard');
+    } catch (err) {
+      window.location.replace('/');
+    }
+  });
 </script>
 
 </body>
